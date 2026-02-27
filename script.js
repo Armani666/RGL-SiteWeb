@@ -21,12 +21,14 @@
     menuButton.addEventListener("click", function () {
       var isOpen = nav.classList.toggle("is-open");
       menuButton.setAttribute("aria-expanded", String(isOpen));
+      menuButton.classList.toggle("is-active", isOpen);
     });
 
     nav.querySelectorAll("a").forEach(function (link) {
       link.addEventListener("click", function () {
         nav.classList.remove("is-open");
         menuButton.setAttribute("aria-expanded", "false");
+        menuButton.classList.remove("is-active");
       });
     });
   }
@@ -56,6 +58,19 @@
   var cartClearBtn = document.getElementById("cartClearBtn");
   var prefillFromCartBtn = document.getElementById("prefillFromCartBtn");
   var orderForm = document.getElementById("orderForm");
+  var productGalleryModal = document.getElementById("productGalleryModal");
+  var productGalleryBackdrop = document.getElementById("productGalleryBackdrop");
+  var productGalleryClose = document.getElementById("productGalleryClose");
+  var productGalleryMainImage = document.getElementById("productGalleryMainImage");
+  var productGalleryThumbs = document.getElementById("productGalleryThumbs");
+  var productGalleryPrev = document.getElementById("productGalleryPrev");
+  var productGalleryNext = document.getElementById("productGalleryNext");
+  var productGalleryTitle = document.getElementById("productGalleryTitle");
+  var productGalleryMainWrap = productGalleryModal ? productGalleryModal.querySelector(".product-gallery-main-wrap") : null;
+  var galleryImages = [];
+  var galleryIndex = 0;
+  var galleryTouchStartX = 0;
+  var galleryTouchStartY = 0;
 
   function refreshProductsCollection() {
     products = document.querySelectorAll(".product-card");
@@ -117,6 +132,23 @@
   function parseNumber(value) {
     var num = Number(value);
     return Number.isFinite(num) ? num : 0;
+  }
+
+  function sanitizeImageUrl(rawUrl, fallbackUrl) {
+    var fallback = String(fallbackUrl || "assets/images/products/base-maybelline.svg");
+    var url = String(rawUrl || "").trim();
+    if (!url) {
+      return fallback;
+    }
+
+    // Allow only https/http absolute URLs and local asset paths.
+    var isHttp = /^https?:\/\//i.test(url);
+    var isLocalAsset = /^(\/?assets\/|\.\/assets\/)/i.test(url);
+    if (!isHttp && !isLocalAsset) {
+      return fallback;
+    }
+
+    return url;
   }
 
   function formatCurrency(value) {
@@ -222,6 +254,118 @@
       price: price,
       stock: Number.isFinite(stock) ? stock : 0
     };
+  }
+
+  function safeJsonParse(value) {
+    if (!value) {
+      return null;
+    }
+    try {
+      return JSON.parse(value);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function normalizeImageList(list) {
+    if (!Array.isArray(list)) {
+      return [];
+    }
+    return list
+      .map(function (item) { return String(item || "").trim(); })
+      .map(function (item) { return sanitizeImageUrl(item, ""); })
+      .filter(Boolean);
+  }
+
+  function parseRowImageList(row, fallbackUrl) {
+    var fallback = sanitizeImageUrl(fallbackUrl, "assets/images/products/base-maybelline.svg");
+    var candidates = [row && row.images, row && row.image_urls, row && row.gallery_images];
+    for (var i = 0; i < candidates.length; i += 1) {
+      var value = candidates[i];
+      if (Array.isArray(value)) {
+        var direct = normalizeImageList(value);
+        if (direct.length) {
+          return direct;
+        }
+        continue;
+      }
+      if (typeof value !== "string") {
+        continue;
+      }
+      var fromJson = normalizeImageList(safeJsonParse(value));
+      if (fromJson.length) {
+        return fromJson;
+      }
+      var split = normalizeImageList(value.split(","));
+      if (split.length) {
+        return split;
+      }
+    }
+    return [fallback];
+  }
+
+  function parseCardImageList(card) {
+    if (!card) {
+      return [];
+    }
+    var encoded = card.getAttribute("data-product-images");
+    if (encoded) {
+      var decoded = safeJsonParse(decodeURIComponent(encoded));
+      var list = normalizeImageList(decoded);
+      if (list.length) {
+        return list;
+      }
+    }
+    var first = card.querySelector(".product-media .media-img");
+    if (first && first.getAttribute("src")) {
+      return [sanitizeImageUrl(first.getAttribute("src"), "")].filter(Boolean);
+    }
+    return [];
+  }
+
+  function closeProductGallery() {
+    if (!productGalleryModal || !productGalleryBackdrop) {
+      return;
+    }
+    productGalleryModal.classList.remove("is-open");
+    productGalleryModal.setAttribute("aria-hidden", "true");
+    productGalleryBackdrop.hidden = true;
+    productGalleryBackdrop.classList.remove("is-visible");
+  }
+
+  function renderProductGallery() {
+    if (!productGalleryMainImage || !productGalleryThumbs || !galleryImages.length) {
+      return;
+    }
+    galleryIndex = (galleryIndex + galleryImages.length) % galleryImages.length;
+    productGalleryMainImage.src = galleryImages[galleryIndex];
+
+    var thumbsHtml = galleryImages.map(function (src, idx) {
+      var activeClass = idx === galleryIndex ? " is-active" : "";
+      return '<button class="product-gallery-thumb' + activeClass + '" type="button" data-gallery-index="' + idx + '" aria-label="Ver foto ' + (idx + 1) + '"><img src="' + escapeHtml(src) + '" alt="Miniatura ' + (idx + 1) + '" loading="lazy"></button>';
+    }).join("");
+    productGalleryThumbs.innerHTML = thumbsHtml;
+  }
+
+  function openProductGallery(card, startIndex) {
+    if (!productGalleryModal || !productGalleryBackdrop || !card) {
+      return;
+    }
+    var name = (card.querySelector("h3") || {}).textContent || "Producto";
+    galleryImages = parseCardImageList(card);
+    if (!galleryImages.length) {
+      return;
+    }
+    galleryIndex = Math.max(0, Number(startIndex) || 0);
+    if (productGalleryTitle) {
+      productGalleryTitle.textContent = "Fotos de " + name.trim();
+    }
+    renderProductGallery();
+    attachImageFallbackListeners(productGalleryModal);
+    productGalleryModal.classList.add("is-open");
+    productGalleryModal.setAttribute("aria-hidden", "false");
+    productGalleryBackdrop.hidden = false;
+    productGalleryBackdrop.classList.add("is-visible");
   }
 
   function addToCart(product, qty) {
@@ -529,7 +673,10 @@
     var category = row && row.category ? String(row.category) : "Producto";
     var name = row && row.name ? String(row.name) : "Producto";
     var description = row && row.description ? String(row.description) : "Consulta disponibilidad por WhatsApp.";
-    var imageUrl = row && row.image_url ? String(row.image_url) : "assets/images/products/base-maybelline.svg";
+    var imageUrl = sanitizeImageUrl(row && row.image_url ? String(row.image_url) : "", "assets/images/products/base-maybelline.svg");
+    var imageList = parseRowImageList(row, imageUrl);
+    var primaryImage = imageList[0] || imageUrl;
+    var encodedImages = encodeURIComponent(JSON.stringify(imageList));
     var price = parseNumber(row && row.price);
     var stock = Math.max(0, Math.floor(parseNumber(row && row.stock)));
     var minStock = Math.max(0, Math.floor(parseNumber(row && row.min_stock)));
@@ -554,9 +701,10 @@
     }
 
     return [
-      '<article class="product-card reveal" data-brand="', escapeHtml(brandFilterKey(brand)), '" data-stock="', escapeHtml(String(stock)), '" data-price="', escapeHtml(String(Math.round(price))), '" data-product-id="', escapeHtml(id), '">',
+      '<article class="product-card reveal" data-brand="', escapeHtml(brandFilterKey(brand)), '" data-stock="', escapeHtml(String(stock)), '" data-price="', escapeHtml(String(Math.round(price))), '" data-product-id="', escapeHtml(id), '" data-product-images="', escapeHtml(encodedImages), '">',
       '<div class="product-media">',
-      '<img class="media-img js-image-fallback" src="', escapeHtml(imageUrl), '" alt="', escapeHtml(name), '" loading="lazy">',
+      '<img class="media-img js-image-fallback" src="', escapeHtml(primaryImage), '" alt="', escapeHtml(name), '" loading="lazy">',
+      '<button class="product-gallery-trigger" type="button" aria-label="Ver mas fotos de ', escapeHtml(name), '">Fotos</button>',
       '<span class="product-media-label">', escapeHtml(categoryLabel), '</span>',
       '<span class="product-stock-badge is-', escapeHtml(stockStatus), '">', escapeHtml(badgeLabel), '</span>',
       '</div>',
@@ -699,23 +847,27 @@
       return Promise.resolve();
     }
 
-    var params = new URLSearchParams({
-      select: "id,sku,name,brand,category,description,price,stock,min_stock,stock_status,image_url,sort_order",
-      order: "sort_order.asc"
-    });
+    function fetchCatalogRows() {
+      var params = new URLSearchParams({
+        select: "id,sku,name,brand,category,description,price,stock,min_stock,stock_status,image_url"
+      });
 
-    return fetch(SUPABASE_URL + "/rest/v1/" + SUPABASE_CATALOG_VIEW + "?" + params.toString(), {
-      headers: {
-        apikey: SUPABASE_PUBLISHABLE_KEY,
-        Authorization: "Bearer " + SUPABASE_PUBLISHABLE_KEY
-      }
-    })
-      .then(function (response) {
+      return fetch(SUPABASE_URL + "/rest/v1/" + SUPABASE_CATALOG_VIEW + "?" + params.toString(), {
+        headers: {
+          apikey: SUPABASE_PUBLISHABLE_KEY,
+          Authorization: "Bearer " + SUPABASE_PUBLISHABLE_KEY
+        }
+      }).then(function (response) {
         if (!response.ok) {
-          throw new Error("Supabase catalog request failed: " + response.status);
+          return response.text().then(function (body) {
+            throw new Error("Supabase catalog request failed: " + response.status + " " + body);
+          });
         }
         return response.json();
-      })
+      });
+    }
+
+    return fetchCatalogRows()
       .then(function (rows) {
         if (Array.isArray(rows)) {
           renderCatalogFromSupabase(rows);
@@ -763,6 +915,14 @@
         return;
       }
 
+      var galleryThumb = target.closest(".product-media .media-img");
+      var galleryTrigger = target.closest(".product-gallery-trigger");
+      if (galleryThumb || galleryTrigger) {
+        var galleryCard = target.closest(".product-card");
+        openProductGallery(galleryCard, 0);
+        return;
+      }
+
       var addButton = target.closest(".add-to-cart-btn");
       if (!addButton) {
         return;
@@ -805,6 +965,95 @@
   if (cartBackdrop) {
     cartBackdrop.addEventListener("click", closeCartDrawer);
   }
+
+  if (productGalleryClose) {
+    productGalleryClose.addEventListener("click", closeProductGallery);
+  }
+
+  if (productGalleryBackdrop) {
+    productGalleryBackdrop.addEventListener("click", closeProductGallery);
+  }
+
+  if (productGalleryThumbs) {
+    productGalleryThumbs.addEventListener("click", function (event) {
+      var target = event.target;
+      if (!(target instanceof Element)) {
+        return;
+      }
+      var button = target.closest("button[data-gallery-index]");
+      if (!button) {
+        return;
+      }
+      galleryIndex = Number(button.getAttribute("data-gallery-index")) || 0;
+      renderProductGallery();
+    });
+  }
+
+  if (productGalleryPrev) {
+    productGalleryPrev.addEventListener("click", function () {
+      galleryIndex -= 1;
+      renderProductGallery();
+    });
+  }
+
+  if (productGalleryNext) {
+    productGalleryNext.addEventListener("click", function () {
+      galleryIndex += 1;
+      renderProductGallery();
+    });
+  }
+
+  if (productGalleryMainWrap) {
+    productGalleryMainWrap.addEventListener("touchstart", function (event) {
+      var touch = event.touches && event.touches[0];
+      if (!touch) {
+        return;
+      }
+      galleryTouchStartX = touch.clientX;
+      galleryTouchStartY = touch.clientY;
+    }, { passive: true });
+
+    productGalleryMainWrap.addEventListener("touchend", function (event) {
+      var touch = event.changedTouches && event.changedTouches[0];
+      if (!touch) {
+        return;
+      }
+      var deltaX = touch.clientX - galleryTouchStartX;
+      var deltaY = touch.clientY - galleryTouchStartY;
+      var absX = Math.abs(deltaX);
+      var absY = Math.abs(deltaY);
+
+      if (absX < 40 || absX < absY) {
+        return;
+      }
+
+      if (deltaX < 0) {
+        galleryIndex += 1;
+      } else {
+        galleryIndex -= 1;
+      }
+      renderProductGallery();
+    }, { passive: true });
+  }
+
+  document.addEventListener("keydown", function (event) {
+    if (!productGalleryModal || !productGalleryModal.classList.contains("is-open")) {
+      return;
+    }
+    if (event.key === "Escape") {
+      closeProductGallery();
+      return;
+    }
+    if (event.key === "ArrowLeft") {
+      galleryIndex -= 1;
+      renderProductGallery();
+      return;
+    }
+    if (event.key === "ArrowRight") {
+      galleryIndex += 1;
+      renderProductGallery();
+    }
+  });
 
   if (cartItems) {
     cartItems.addEventListener("click", function (event) {
