@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   --bg: #fbf6f3;
   --bg-alt: #f3e7e1;
   --card: rgba(255, 255, 255, 0.85);
@@ -2786,10 +2786,6 @@ body.has-cart-open {
     height: 18px !important;
     flex: 0 0 18px !important;
   }
-
-  .site-header .header-cta .social-btn.btn-primary {
-    display: none !important;
-  }
 }
 
 @media (max-width: 720px) {
@@ -2823,4 +2819,22 @@ body.has-cart-open {
     aspect-ratio: 4 / 3 !important;
     max-height: 300px !important;
   }
+}
+
+/* Header CTA fix: keep WhatsApp icon visible on all breakpoints */
+.site-header .header-cta .social-btn.btn-primary {
+  background: #25d366 !important;
+  border-color: #1fb85a !important;
+  color: #ffffff !important;
+}
+
+.site-header .header-cta .social-btn.btn-primary .social-icon,
+.site-header .header-cta .social-btn.btn-primary svg {
+  color: #ffffff !important;
+  fill: currentColor !important;
+}
+
+/* Hide duplicate floating WhatsApp CTA; header button is primary */
+.wa-float {
+  display: none !important;
 }
