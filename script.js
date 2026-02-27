@@ -1,10 +1,9 @@
-﻿(function () {
+(function () {
   var WHATSAPP_NUMBER = "524791382982";
   var CART_STORAGE_KEY = "rgl_cart_v1";
-  var SUPABASE_URL = "https://drjwafzfiyprmcaqqeww.supabase.co";
-  // PERSONALIZAR: pega tu publishable key completa (sb_publishable_...)
-  var SUPABASE_PUBLISHABLE_KEY = "sb_publishable_wtRKVp8sLN1iZ4FlNyXKHQ_Nos6sD0-";
-  var SUPABASE_CATALOG_VIEW = "catalog_products";
+  var SUPABASE_URL = window.RGL_CONFIG && window.RGL_CONFIG.supabaseUrl ? String(window.RGL_CONFIG.supabaseUrl) : "";
+  var SUPABASE_PUBLISHABLE_KEY = window.RGL_CONFIG && window.RGL_CONFIG.supabasePublishableKey ? String(window.RGL_CONFIG.supabasePublishableKey) : "";
+  var SUPABASE_CATALOG_VIEW = window.RGL_CONFIG && window.RGL_CONFIG.catalogView ? String(window.RGL_CONFIG.catalogView) : "catalog_products";
 
   var cart = loadCart();
   var revealObserver = null;

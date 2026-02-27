@@ -1,8 +1,11 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self' https://drjwafzfiyprmcaqqeww.supabase.co; img-src 'self' https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
   <title>Rose Gold Luxury | Maquillaje Original</title>
   <meta name="description" content="Rose Gold Luxury - maquillaje original en Leon, Guanajuato. NYX, Maybelline y e.l.f. Compra por WhatsApp e Instagram.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -458,6 +461,13 @@
     </div>
     <div class="product-gallery-thumbs" id="productGalleryThumbs"></div>
   </aside>
+  <script>
+    window.RGL_CONFIG = {
+      supabaseUrl: "https://drjwafzfiyprmcaqqeww.supabase.co",
+      supabasePublishableKey: "sb_publishable_wtRKVp8sLN1iZ4FlNyXKHQ_Nos6sD0-",
+      catalogView: "catalog_products"
+    };
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
