@@ -1,9 +1,10 @@
-(function () {
+﻿(function () {
   var WHATSAPP_NUMBER = "524791382982";
   var CART_STORAGE_KEY = "rgl_cart_v1";
   var SUPABASE_URL = window.RGL_CONFIG && window.RGL_CONFIG.supabaseUrl ? String(window.RGL_CONFIG.supabaseUrl) : "";
   var SUPABASE_PUBLISHABLE_KEY = window.RGL_CONFIG && window.RGL_CONFIG.supabasePublishableKey ? String(window.RGL_CONFIG.supabasePublishableKey) : "";
   var SUPABASE_CATALOG_VIEW = window.RGL_CONFIG && window.RGL_CONFIG.catalogView ? String(window.RGL_CONFIG.catalogView) : "catalog_products";
+  var SUPABASE_CATALOG_TABLE = window.RGL_CONFIG && window.RGL_CONFIG.catalogTable ? String(window.RGL_CONFIG.catalogTable) : "product_web";
 
   var cart = loadCart();
   var revealObserver = null;
@@ -239,7 +240,8 @@
     var brand = brandNode ? brandNode.textContent.trim() : (card.getAttribute("data-brand") || "");
     var price = parsePrice(priceNode ? priceNode.textContent : "0");
     var id = card.getAttribute("data-product-id") || slugify(brand + "-" + name);
-    var stock = parseNumber(card.getAttribute("data-stock"));
+    var rawStock = card.getAttribute("data-stock");
+    var stock = (rawStock == null || String(rawStock).trim() === "") ? Infinity : parseNumber(rawStock);
 
     card.setAttribute("data-product-id", id);
     card.setAttribute("data-product-name", name);
@@ -251,7 +253,7 @@
       name: name,
       brand: brand,
       price: price,
-      stock: Number.isFinite(stock) ? stock : 0
+      stock: Number.isFinite(stock) ? stock : Infinity
     };
   }
 
@@ -278,13 +280,25 @@
 
   function parseRowImageList(row, fallbackUrl) {
     var fallback = sanitizeImageUrl(fallbackUrl, "assets/images/products/base-maybelline.svg");
+    function withPrimary(list) {
+      var merged = [fallback].concat(Array.isArray(list) ? list : []);
+      var seen = {};
+      return merged.filter(function (url) {
+        var key = String(url || "").trim();
+        if (!key || seen[key]) {
+          return false;
+        }
+        seen[key] = true;
+        return true;
+      });
+    }
     var candidates = [row && row.images, row && row.image_urls, row && row.gallery_images];
     for (var i = 0; i < candidates.length; i += 1) {
       var value = candidates[i];
       if (Array.isArray(value)) {
         var direct = normalizeImageList(value);
         if (direct.length) {
-          return direct;
+          return withPrimary(direct);
         }
         continue;
       }
@@ -293,11 +307,11 @@
       }
       var fromJson = normalizeImageList(safeJsonParse(value));
       if (fromJson.length) {
-        return fromJson;
+        return withPrimary(fromJson);
       }
       var split = normalizeImageList(value.split(","));
       if (split.length) {
-        return split;
+        return withPrimary(split);
       }
     }
     return [fallback];
@@ -593,6 +607,14 @@
       }
       img.dataset.fallbackBound = "1";
       img.addEventListener("error", function () {
+        // First failure: swap to local fallback asset instead of hiding image.
+        if (img.dataset.fallbackApplied !== "1") {
+          img.dataset.fallbackApplied = "1";
+          img.src = "assets/images/products/base-maybelline.svg";
+          return;
+        }
+
+        // If fallback also fails, mark container and hide broken image.
         var container = img.closest(".visual-photo, .product-media");
         if (container) {
           container.classList.add("is-missing-image");
@@ -677,30 +699,33 @@
     var primaryImage = imageList[0] || imageUrl;
     var encodedImages = encodeURIComponent(JSON.stringify(imageList));
     var price = parseNumber(row && row.price);
-    var stock = Math.max(0, Math.floor(parseNumber(row && row.stock)));
+    var hasStock = row && row.stock != null && String(row.stock).trim() !== "";
+    var stock = hasStock ? Math.max(0, Math.floor(parseNumber(row && row.stock))) : null;
     var minStock = Math.max(0, Math.floor(parseNumber(row && row.min_stock)));
     var rawStatus = normalizeText(row && row.stock_status ? String(row.stock_status) : "");
     var stockStatus = rawStatus;
     if (!stockStatus) {
-      if (stock <= 0) {
+      if (hasStock && stock <= 0) {
         stockStatus = "agotado";
-      } else if (stock <= minStock && minStock > 0) {
+      } else if (hasStock && stock <= minStock && minStock > 0) {
         stockStatus = "alerta";
       } else {
         stockStatus = "disponible";
       }
     }
-    var stockText = stock > 0 ? ("Stock: " + stock + " disponible" + (stock === 1 ? "" : "s")) : "Agotado";
+    var stockText = hasStock
+      ? (stock > 0 ? ("Stock: " + stock + " disponible" + (stock === 1 ? "" : "s")) : "Agotado")
+      : "Disponibilidad por WhatsApp";
     var categoryLabel = category.length > 12 ? category.slice(0, 12) : category;
     var badgeLabel = "Disponible";
-    if (stockStatus === "agotado" || stock <= 0) {
+    if (stockStatus === "agotado" || (hasStock && stock <= 0)) {
       badgeLabel = "Agotado";
-    } else if (stockStatus === "alerta" || (minStock > 0 && stock <= minStock)) {
+    } else if (stockStatus === "alerta" || (hasStock && minStock > 0 && stock <= minStock)) {
       badgeLabel = "Pocas piezas";
     }
 
     return [
-      '<article class="product-card reveal" data-brand="', escapeHtml(brandFilterKey(brand)), '" data-stock="', escapeHtml(String(stock)), '" data-price="', escapeHtml(String(Math.round(price))), '" data-product-id="', escapeHtml(id), '" data-product-images="', escapeHtml(encodedImages), '">',
+      '<article class="product-card reveal" data-brand="', escapeHtml(brandFilterKey(brand)), '" data-stock="', escapeHtml(hasStock ? String(stock) : ""), '" data-price="', escapeHtml(String(Math.round(price))), '" data-product-id="', escapeHtml(id), '" data-product-images="', escapeHtml(encodedImages), '">',
       '<div class="product-media">',
       '<img class="media-img js-image-fallback" src="', escapeHtml(primaryImage), '" alt="', escapeHtml(name), '" loading="lazy">',
       '<button class="product-gallery-trigger" type="button" aria-label="Ver mas fotos de ', escapeHtml(name), '">Fotos</button>',
@@ -711,7 +736,7 @@
       '<span class="product-tag">', escapeHtml(brand), '</span>',
       '<h3>', escapeHtml(name), '</h3>',
       '<p>', escapeHtml(description), '</p>',
-      '<p class="product-stock', stock <= 0 ? ' is-out' : '', '">', escapeHtml(stockText), '</p>',
+      '<p class="product-stock', (hasStock && stock <= 0) ? ' is-out' : '', '">', escapeHtml(stockText), '</p>',
       '<div class="product-footer">',
       '<strong>', escapeHtml(formatCurrency(price)), '</strong>',
       '<a href="', escapeHtml(buildWhatsAppUrl("Hola, me interesa " + name + " de " + brand)), '" target="_blank" rel="noreferrer noopener">Pedir</a>',
@@ -755,7 +780,8 @@
         actions.appendChild(addButton);
       }
 
-      var stockValue = Number(card.getAttribute("data-stock"));
+      var rawStock = card.getAttribute("data-stock");
+      var stockValue = (rawStock == null || String(rawStock).trim() === "") ? NaN : Number(rawStock);
       var qtyInCart = findCartItemQty(product.id);
       if (Number.isFinite(stockValue) && stockValue <= 0) {
         addButton.disabled = true;
@@ -837,21 +863,60 @@
     applyProductFilters();
   }
 
+  function setCatalogLoadErrorState(titleText, bodyText) {
+    if (productsGrid) {
+      productsGrid.innerHTML = "";
+    }
+    refreshProductsCollection();
+    if (resultsNote) {
+      resultsNote.textContent = "Mostrando 0 productos";
+    }
+    if (emptyState) {
+      emptyState.classList.remove("is-hidden");
+      emptyState.classList.add("is-visible");
+      var title = emptyState.querySelector("h3");
+      var text = emptyState.querySelector("p");
+      if (title) {
+        title.textContent = titleText || "No se pudo cargar el catalogo";
+      }
+      if (text) {
+        text.textContent = bodyText || "Revisa tu configuracion de Supabase y vuelve a intentar.";
+      }
+    }
+  }
+
+  function isUsableSupabaseKey(value) {
+    var key = String(value || "").trim();
+    if (!key) {
+      return false;
+    }
+    // Accept modern publishable keys and legacy anon JWT keys.
+    return key.indexOf("sb_publishable_") === 0 || /^eyJ[a-zA-Z0-9_-]+\./.test(key);
+  }
+
   function loadCatalogFromSupabase() {
     if (!productsGrid || !window.fetch) {
       return Promise.resolve();
     }
 
-    if (!SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY.indexOf("sb_publishable_") !== 0) {
+    var supabaseUrl = String(SUPABASE_URL || "").trim().replace(/\/+$/, "");
+    if (!supabaseUrl || !isUsableSupabaseKey(SUPABASE_PUBLISHABLE_KEY)) {
+      setCatalogLoadErrorState(
+        "No se pudo cargar el catalogo",
+        "Falta configurar Supabase (URL o llave publica)."
+      );
       return Promise.resolve();
     }
 
-    function fetchCatalogRows() {
-      var params = new URLSearchParams({
-        select: "id,sku,name,brand,category,description,price,stock,min_stock,stock_status,image_url"
-      });
+    function fetchCatalogRows(resourceName, selectValue, filters) {
+      var params = new URLSearchParams({ select: selectValue });
+      if (filters && typeof filters === "object") {
+        Object.keys(filters).forEach(function (key) {
+          params.set(key, String(filters[key]));
+        });
+      }
 
-      return fetch(SUPABASE_URL + "/rest/v1/" + SUPABASE_CATALOG_VIEW + "?" + params.toString(), {
+      return fetch(supabaseUrl + "/rest/v1/" + resourceName + "?" + params.toString(), {
         headers: {
           apikey: SUPABASE_PUBLISHABLE_KEY,
           Authorization: "Bearer " + SUPABASE_PUBLISHABLE_KEY
@@ -866,14 +931,49 @@
       });
     }
 
-    return fetchCatalogRows()
+    var fullSelect = "id,name,brand,description,price,image_url,image_urls";
+    var minimalSelect = "id,name,brand,description,price,image_url,image_urls";
+
+    return fetchCatalogRows(SUPABASE_CATALOG_VIEW, fullSelect)
+      .catch(function (error) {
+        var text = String(error && error.message || "");
+        var missingColumn = text.indexOf("42703") !== -1 || text.indexOf("does not exist") !== -1;
+        if (!missingColumn) {
+          throw error;
+        }
+        console.warn("[catalog] retrying with minimal select", error);
+        return fetchCatalogRows(SUPABASE_CATALOG_VIEW, minimalSelect);
+      })
+      .then(function (rows) {
+        if (Array.isArray(rows) && rows.length > 0) {
+          console.info("[catalog] loaded from " + SUPABASE_CATALOG_VIEW + ": " + rows.length);
+          return rows;
+        }
+
+        console.warn("[catalog] empty result from " + SUPABASE_CATALOG_VIEW + ", trying " + SUPABASE_CATALOG_TABLE);
+        return fetchCatalogRows(SUPABASE_CATALOG_TABLE, fullSelect, { is_published: "eq.true" })
+          .catch(function (fallbackError) {
+            var text = String(fallbackError && fallbackError.message || "");
+            var missingColumn = text.indexOf("42703") !== -1 || text.indexOf("does not exist") !== -1;
+            if (!missingColumn) {
+              throw fallbackError;
+            }
+            console.warn("[catalog] fallback retrying with minimal select", fallbackError);
+            return fetchCatalogRows(SUPABASE_CATALOG_TABLE, minimalSelect, { is_published: "eq.true" });
+          });
+      })
       .then(function (rows) {
         if (Array.isArray(rows)) {
+          console.info("[catalog] rows loaded: " + rows.length);
           renderCatalogFromSupabase(rows);
         }
       })
       .catch(function (error) {
         console.warn("[catalog] using static fallback", error);
+        setCatalogLoadErrorState(
+          "No se pudo cargar el catalogo",
+          "Hubo un error al consultar Supabase. Revisa la consola para ver el detalle."
+        );
       });
   }
 
