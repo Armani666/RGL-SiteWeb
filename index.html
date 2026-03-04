@@ -22,7 +22,7 @@
         <span class="brand-text">Rose Gold Luxury</span>
       </a>
 
-      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="siteNav" aria-label="Abrir menu">
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="siteNav" aria-label="Abrir menú">
         <span class="menu-icon" aria-hidden="true">
           <span></span>
           <span></span>
@@ -30,9 +30,9 @@
         </span>
       </button>
 
-      <nav class="site-nav" id="siteNav" aria-label="Navegacion principal">
+      <nav class="site-nav" id="siteNav" aria-label="Navegación principal">
         <a href="#inicio">Inicio</a>
-        <a href="#catalogo">Catalogo</a>
+        <a href="#catalogo">Catálogo</a>
         <a href="#nosotros">Nosotros</a>
         <a href="#faq">FAQ</a>
         <a href="#contacto">Contacto</a>
@@ -73,27 +73,27 @@
           <h1>Maquillaje 100% original con un look premium y atención cercana</h1>
           <p class="hero-text">
             En <strong>Rose Gold Luxury</strong> encuentras productos de <strong>NYX</strong>,
-            <strong>Maybelline</strong> y <strong>e.l.f.</strong> con asesoria por WhatsApp,
-            compra facil y envios seguros.
+            <strong>Maybelline</strong> y <strong>e.l.f.</strong> con asesoría por WhatsApp,
+            compra fácil y envíos seguros.
           </p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#catalogo">Ver catalogo</a>
+            <a class="btn btn-primary" href="#catalogo">Ver catálogo</a>
             <a class="btn btn-outline" href="https://wa.me/524791382982?text=Hola%2C%20quiero%20hacer%20un%20pedido%20en%20Rose%20Gold%20Luxury" target="_blank" rel="noreferrer noopener">Pedir por WhatsApp</a>
           </div>
           <ul class="hero-badges" aria-label="Beneficios principales">
             <li>Original garantizado</li>
             <li>Atención personalizada</li>
-            <li>Envios desde León, Gto</li>
+            <li>Envíos desde León, Gto</li>
           </ul>
         </div>
 
-        <!-- PERSONALIZAR: reemplaza estas imagenes por fotos reales de tu tienda/productos -->
+        <!-- PERSONALIZAR: reemplaza estas imágenes por fotos reales de tu tienda/productos -->
         <div class="hero-visual reveal">
           <div class="visual-card tall visual-photo">
-            <img class="media-img js-image-fallback" src="./assets/images/products/logo2.jpeg" alt="Coleccion destacada Rose Gold Luxury" loading="eager">
+            <img class="media-img js-image-fallback" src="./assets/images/products/logo2.jpeg" alt="Colección destacada Rose Gold Luxury" loading="eager">
             <div class="visual-overlay">
               <div class="visual-label">Rose Gold Edit</div>
-              <p>Seleccion de maquillaje original lista para entrega y envio.</p>
+              <p>Selección de maquillaje original lista para entrega y envío.</p>
             </div>
           </div>
           <div class="visual-card visual-photo">
@@ -107,7 +107,7 @@
             <img class="media-img js-image-fallback" src="https://1000marcas.net/wp-content/uploads/2020/02/logo-Maybelline.png" alt="Productos Maybelline" loading="lazy">
             <div class="visual-overlay">
               <div class="visual-label">Maybelline</div>
-              <p>Bases y mascara</p>
+              <p>Bases y máscara</p>
             </div>
           </div>
           <div class="visual-card wide visual-photo">
@@ -125,8 +125,8 @@
       <div class="container">
         <div class="section-head reveal">
           <p class="eyebrow">Confianza</p>
-          <h2>Belleza con confianza y acompanamiento real</h2>
-          <p>El objetivo de esta pagina es que tus clientas sientan seguridad al comprar y te escriban rapido.</p>
+          <h2>Belleza con confianza y acompañamiento real</h2>
+          <p>El objetivo de esta página es que tus clientas sientan seguridad al comprar y te escriban rápido.</p>
         </div>
 
         <div class="cards-grid four">
@@ -135,15 +135,15 @@
             <p>Productos de marcas reconocidas y seleccionados con cuidado.</p>
           </article>
           <article class="info-card reveal">
-            <h3>Asesoria por WhatsApp</h3>
+            <h3>Asesoría por WhatsApp</h3>
             <p>Ayuda para elegir tonos, acabados y combinaciones.</p>
           </article>
           <article class="info-card reveal">
-            <h3>Compra facil</h3>
+            <h3>Compra fácil</h3>
             <p>Proceso directo, sin complicaciones, ideal para celular.</p>
           </article>
           <article class="info-card reveal">
-            <h3>Envio seguro</h3>
+            <h3>Envío seguro</h3>
             <p>Atención desde León, Guanajuato, con seguimiento y cuidado.</p>
           </article>
         </div>
@@ -153,7 +153,7 @@
     <section class="section products" id="catalogo">
       <div class="container">
         <div class="section-head reveal">
-          <p class="eyebrow">Catalogo</p>
+          <p class="eyebrow">Catálogo</p>
           <h2>Favoritos de Rose Gold Luxury</h2>
           <p>Usa estas tarjetas como base y luego cambia nombres, precios y fotos por tus productos reales.</p>
         </div>
@@ -176,17 +176,17 @@
               <option value="all">Todos</option>
               <option value="0-199">Hasta $199</option>
               <option value="200-399">$200 - $399</option>
-              <option value="400+">$400 o mas</option>
+              <option value="400+">$400 o más</option>
             </select>
           </label>
           <p class="results-note" id="resultsNote" aria-live="polite">Mostrando 6 productos</p>
         </div>
-        <!-- CATALOGO DINAMICO: este contenedor se llena desde Supabase (vista: catalog_products) -->
+        <!-- CATÁLOGO DINÁMICO: este contenedor se llena desde Supabase (vista: catalog_products) -->
         <!-- Si quieres volver al modo manual, vuelve a pegar aqui tus <article class="product-card"> -->
         <div class="cards-grid products-grid" id="productsGrid"></div>
         <div class="empty-state reveal is-hidden" id="emptyState">
           <h3>No encontramos productos con ese filtro</h3>
-          <p>Prueba con otra palabra o cambia la marca para ver mas opciones.</p>
+          <p>Prueba con otra palabra o cambia la marca para ver más opciones.</p>
           <button class="btn btn-outline" type="button" id="resetFiltersBtn">Limpiar filtros</button>
         </div>
       </div>
@@ -206,7 +206,7 @@
             <li>Apoyo para armar surtido por marca</li>
             <li>Pedido y seguimiento por WhatsApp</li>
           </ul>
-          <a class="btn btn-primary" href="https://wa.me/524791382982?text=Hola%2C%20quiero%20informacion%20de%20mayoreo%20(10%20piezas%20o%20mas)%20en%20Rose%20Gold%20Luxury" target="_blank" rel="noreferrer noopener">Solicitar precio de mayoreo</a>
+          <a class="btn btn-primary" href="https://wa.me/524791382982?text=Hola%2C%20quiero%20informacion%20de%20mayoreo%20(10%20piezas%20o%20m%C3%A1s)%20en%20Rose%20Gold%20Luxury" target="_blank" rel="noreferrer noopener">Solicitar precio de mayoreo</a>
         </div>
         <div class="wholesale-photo visual-photo reveal">
           <img class="media-img js-image-fallback" src="https://glammayoreo.com/cdn/shop/files/4.png?v=1763692540&width=493" alt="Venta por mayoreo de maquillaje original" loading="lazy">
@@ -219,7 +219,7 @@
         <div class="brand-panel reveal">
           <p class="eyebrow">Marcas</p>
           <h2>Marcas que manejas y que tus clientas ya buscan</h2>
-          <p>Esta seccion refuerza confianza y ayuda a que te encuentren por marca.</p>
+          <p>Esta sección refuerza confianza y ayuda a que te encuentren por marca.</p>
           <a class="btn btn-outline" href="https://instagram.com/rose._goldoficial" target="_blank" rel="noreferrer noopener">Ver novedades en Instagram</a>
         </div>
         <div class="brand-list">
@@ -236,13 +236,13 @@
           <p class="eyebrow">Autenticidad</p>
           <h2>Tu maquillaje, siempre original</h2>
           <p>
-            En Rose Gold Luxury la confianza importa. Esta pagina esta hecha para comunicar
+            En Rose Gold Luxury la confianza importa. Esta página está hecha para comunicar
             calidad, estilo y una experiencia de compra clara.
           </p>
           <ul class="check-list">
-            <li>Revision antes de entregar o enviar</li>
+            <li>Revisión antes de entregar o enviar</li>
             <li>Atención postventa por WhatsApp</li>
-            <li>Acompanamiento para elegir productos</li>
+            <li>Acompañamiento para elegir productos</li>
           </ul>
         </div>
 
@@ -269,15 +269,15 @@
         </div>
         <div class="cards-grid three">
           <article class="quote-card reveal">
-            <p>"Excelente atención y me ayudaron a elegir el tono ideal. Todo llego muy bien."</p>
+            <p>"Excelente atención y me ayudaron a elegir el tono ideal. Todo llegó muy bien."</p>
             <span>Clienta feliz</span>
           </article>
           <article class="quote-card reveal">
-            <p>"Me encanto que contestan rapido por WhatsApp y los productos se ven de calidad."</p>
+            <p>"Me encantó que contestan rápido por WhatsApp y los productos se ven de calidad."</p>
             <span>Compra por Instagram</span>
           </article>
           <article class="quote-card reveal">
-            <p>"Super recomendada, compra facil y look hermoso con los productos."</p>
+            <p>"Súper recomendada, compra fácil y look hermoso con los productos."</p>
             <span>Clienta recurrente</span>
           </article>
         </div>
@@ -287,12 +287,12 @@
     <section class="section cta-band">
       <div class="container cta-panel reveal">
         <div>
-          <p class="eyebrow">Asesoria</p>
-          <h2>No sabes que producto elegir?</h2>
+          <p class="eyebrow">Asesoría</p>
+          <h2>¿No sabes qué producto elegir?</h2>
           <p>Te ayudamos a elegir por tono, tipo de piel y estilo de maquillaje. Respuesta por WhatsApp.</p>
         </div>
         <div class="cta-actions">
-          <a class="btn btn-primary" href="https://wa.me/524791382982?text=Hola%2C%20quiero%20recomendacion%20de%20maquillaje%20en%20Rose%20Gold%20Luxury" target="_blank" rel="noreferrer noopener">Pedir recomendacion</a>
+          <a class="btn btn-primary" href="https://wa.me/524791382982?text=Hola%2C%20quiero%20recomendacion%20de%20maquillaje%20en%20Rose%20Gold%20Luxury" target="_blank" rel="noreferrer noopener">Pedir recomendación</a>
           <a class="btn btn-outline" href="#contacto">Ver contacto</a>
         </div>
       </div>
@@ -302,34 +302,34 @@
     <section class="section ops" id="pagos-envios">
       <div class="container">
         <div class="section-head reveal">
-          <p class="eyebrow">Pagos y envios</p>
-          <h2>Compra facil, envio claro y politicas visibles</h2>
-          <p>Informacion clara para comprar con confianza antes de contactarnos.</p>
+          <p class="eyebrow">Pagos y envíos</p>
+          <h2>Compra fácil, envío claro y políticas visibles</h2>
+          <p>Información clara para comprar con confianza antes de contactarnos.</p>
         </div>
 
         <div class="ops-grid">
           <article class="ops-card reveal">
-            <h3>Metodos de pago</h3>
+            <h3>Métodos de pago</h3>
             <ul class="pill-list">
               <li>Transferencia bancaria</li>
-              <li>Deposito</li>
+              <li>Depósito</li>
               <li>Mercado Pago</li>
               <li>Efectivo en entrega local</li>
             </ul>
           </article>
 
           <article class="ops-card reveal">
-            <h3>Envios</h3>
+            <h3>Envíos</h3>
             <ul class="pill-list">
-              <li>Envios desde León, Guanajuato</li>
+              <li>Envíos desde León, Guanajuato</li>
               <li>Cobertura local y/o nacional</li>
-              <li>Tiempo estimado: 2 a 5 dias habiles</li>
-              <li>Comparte guia o seguimiento al enviar</li>
+              <li>Tiempo estimado: 2 a 5 días hábiles</li>
+              <li>Comparte guía o seguimiento al enviar</li>
             </ul>
           </article>
 
           <article class="ops-card reveal">
-            <h3>Politicas basicas</h3>
+            <h3>Políticas básicas</h3>
             <ul class="pill-list">
               <li>Verifica producto al recibir</li>
               <li>Cambios sujetos a condiciones</li>
@@ -345,24 +345,24 @@
         <div class="section-head reveal">
           <p class="eyebrow">FAQ</p>
           <h2>Preguntas frecuentes</h2>
-          <p>Respuestas rapidas para resolver dudas antes de hacer pedido.</p>
+          <p>Respuestas rápidas para resolver dudas antes de hacer pedido.</p>
         </div>
 
         <div class="faq-list">
           <details class="faq-item reveal" open>
-            <summary>Los productos son originales?</summary>
-            <p>Si. Rose Gold Luxury trabaja con maquillaje original de marcas reconocidas.</p>
+            <summary>¿Los productos son originales?</summary>
+            <p>Sí. Rose Gold Luxury trabaja con maquillaje original de marcas reconocidas.</p>
           </details>
           <details class="faq-item reveal">
-            <summary>Que metodos de pago aceptas?</summary>
-            <p>Transferencia bancaria, deposito y opciones digitales disponibles al confirmar pedido.</p>
+            <summary>¿Qué métodos de pago aceptas?</summary>
+            <p>Transferencia bancaria, depósito y opciones digitales disponibles al confirmar pedido.</p>
           </details>
           <details class="faq-item reveal">
-            <summary>Haces envios fuera de León, Gto?</summary>
-            <p>Si, realizamos envios y tambien podemos coordinar entrega local en León, Gto.</p>
+            <summary>¿Haces envíos fuera de León, Gto?</summary>
+            <p>Sí, realizamos envíos y también podemos coordinar entrega local en León, Gto.</p>
           </details>
           <details class="faq-item reveal">
-            <summary>Cuanto tarda en llegar mi pedido?</summary>
+            <summary>¿Cuánto tarda en llegar mi pedido?</summary>
             <p>El tiempo depende de stock y destino; te confirmamos fecha estimada al momento de tu compra.</p>
           </details>
         </div>
@@ -373,9 +373,9 @@
     <div class="contact-card reveal">
       <p class="eyebrow">Contacto</p>
       <h2>Haz tu pedido por WhatsApp</h2>
-      <p>Escribenos para ayudarte con tonos, productos y disponibilidad.</p>
+      <p>Escríbenos para ayudarte con tonos, productos y disponibilidad.</p>
 
-      <!-- PERSONALIZAR: telefono, Instagram y ubicacion -->
+      <!-- PERSONALIZAR: teléfono, Instagram y ubicación -->
       <div class="contact-list">
         <a href="https://wa.me/524791382982" target="_blank" rel="noreferrer noopener">
           <span>WhatsApp</span>
@@ -386,7 +386,7 @@
           <strong>@rose._goldoficial</strong>
         </a>
         <div>
-          <span>Ubicacion</span>
+          <span>Ubicación</span>
           <strong>León, Guanajuato</strong>
         </div>
       </div>
@@ -400,9 +400,9 @@
 
     <div class="contact-card alt reveal">
       <p class="eyebrow">Atención</p>
-      <h2>Compra facil y personalizada</h2>
+      <h2>Compra fácil y personalizada</h2>
       <ul class="check-list">
-        <li>Asesoria para elegir productos y tonos</li>
+        <li>Asesoría para elegir productos y tonos</li>
         <li>Confirmación de disponibilidad antes de pago</li>
         <li>Seguimiento por WhatsApp</li>
       </ul>
@@ -417,9 +417,9 @@
         <p class="footer-brand">Rose Gold Luxury</p>
         <p>Maquillaje original con toque de lujo</p>
       </div>
-      <nav class="footer-nav" aria-label="Navegacion footer">
+      <nav class="footer-nav" aria-label="Navegación footer">
         <a href="#inicio">Inicio</a>
-        <a href="#catalogo">Catalogo</a>
+        <a href="#catalogo">Catálogo</a>
         <a href="#nosotros">Nosotros</a>
         <a href="#faq">FAQ</a>
         <a href="#contacto">Contacto</a>
@@ -447,8 +447,8 @@
     </div>
     <div class="cart-items" id="cartItems">
       <div class="cart-empty" id="cartEmpty">
-        <p>Tu carrito esta vacio.</p>
-        <small>Agrega productos desde el catalogo para generar tu pedido por WhatsApp.</small>
+        <p>Tu carrito está vacío.</p>
+        <small>Agrega productos desde el catálogo para generar tu pedido por WhatsApp.</small>
       </div>
     </div>
     <div class="cart-summary">
@@ -471,10 +471,10 @@
   <aside class="product-gallery-modal" id="productGalleryModal" aria-hidden="true" aria-labelledby="productGalleryTitle" role="dialog">
     <div class="product-gallery-header">
       <div>
-        <p class="eyebrow">Galeria</p>
+        <p class="eyebrow">Galería</p>
         <h2 id="productGalleryTitle">Fotos del producto</h2>
       </div>
-      <button class="product-gallery-close" type="button" id="productGalleryClose" aria-label="Cerrar galeria">X</button>
+      <button class="product-gallery-close" type="button" id="productGalleryClose" aria-label="Cerrar galería">X</button>
     </div>
     <div class="product-gallery-main-wrap">
       <button class="product-gallery-nav prev" type="button" id="productGalleryPrev" aria-label="Foto anterior">&#8249;</button>
@@ -487,3 +487,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+

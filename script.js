@@ -728,7 +728,7 @@
       '<article class="product-card reveal" data-brand="', escapeHtml(brandFilterKey(brand)), '" data-stock="', escapeHtml(hasStock ? String(stock) : ""), '" data-price="', escapeHtml(String(Math.round(price))), '" data-product-id="', escapeHtml(id), '" data-product-images="', escapeHtml(encodedImages), '">',
       '<div class="product-media">',
       '<img class="media-img js-image-fallback" src="', escapeHtml(primaryImage), '" alt="', escapeHtml(name), '" loading="lazy">',
-      '<button class="product-gallery-trigger" type="button" aria-label="Ver mas fotos de ', escapeHtml(name), '">Fotos</button>',
+      '<button class="product-gallery-trigger" type="button" aria-label="Ver más fotos de ', escapeHtml(name), '">Fotos</button>',
       '<span class="product-media-label">', escapeHtml(categoryLabel), '</span>',
       '<span class="product-stock-badge is-', escapeHtml(stockStatus), '">', escapeHtml(badgeLabel), '</span>',
       '</div>',
@@ -850,7 +850,7 @@
           title.textContent = "No hay productos publicados";
         }
         if (text) {
-          text.textContent = "Publica productos en Supabase (product_web.is_published = true) para mostrarlos aqui.";
+          text.textContent = "Publica productos en Supabase (product_web.is_published = true) para mostrarlos aquí.";
         }
       }
       return;
@@ -877,10 +877,10 @@
       var title = emptyState.querySelector("h3");
       var text = emptyState.querySelector("p");
       if (title) {
-        title.textContent = titleText || "No se pudo cargar el catalogo";
+        title.textContent = titleText || "No se pudo cargar el catálogo";
       }
       if (text) {
-        text.textContent = bodyText || "Revisa tu configuracion de Supabase y vuelve a intentar.";
+        text.textContent = bodyText || "Revisa tu configuración de Supabase y vuelve a intentar.";
       }
     }
   }
@@ -902,8 +902,8 @@
     var supabaseUrl = String(SUPABASE_URL || "").trim().replace(/\/+$/, "");
     if (!supabaseUrl || !isUsableSupabaseKey(SUPABASE_PUBLISHABLE_KEY)) {
       setCatalogLoadErrorState(
-        "No se pudo cargar el catalogo",
-        "Falta configurar Supabase (URL o llave publica)."
+        "No se pudo cargar el catálogo",
+        "Falta configurar Supabase (URL o llave pública)."
       );
       return Promise.resolve();
     }
@@ -971,7 +971,7 @@
       .catch(function (error) {
         console.warn("[catalog] using static fallback", error);
         setCatalogLoadErrorState(
-          "No se pudo cargar el catalogo",
+          "No se pudo cargar el catálogo",
           "Hubo un error al consultar Supabase. Revisa la consola para ver el detalle."
         );
       });
@@ -1295,3 +1295,4 @@
   renderCart();
   loadCatalogFromSupabase();
 })();
+
