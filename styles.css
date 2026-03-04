@@ -521,6 +521,42 @@ img {
   letter-spacing: 0.06em;
 }
 
+.wholesale-layout {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.wholesale-card {
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 90% 10%, rgba(183, 110, 121, 0.12), transparent 45%),
+    rgba(255, 255, 255, 0.9);
+  padding: 24px;
+}
+
+.wholesale-card h2 {
+  margin: 0 0 10px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2rem, 3vw, 2.6rem);
+  line-height: 0.95;
+}
+
+.wholesale-card p {
+  color: var(--muted);
+  margin: 0;
+}
+
+.wholesale-card .check-list {
+  margin-bottom: 16px;
+}
+
+.wholesale-photo {
+  border-radius: var(--radius-lg);
+  min-height: 320px;
+}
+
 .split-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -821,6 +857,7 @@ blockquote {
 
   .hero-grid,
   .brands-layout,
+  .wholesale-layout,
   .split-grid,
   .cta-panel {
     grid-template-columns: 1fr;
@@ -868,6 +905,8 @@ blockquote {
 
   .hero-copy,
   .hero-visual,
+  .wholesale-card,
+  .wholesale-photo,
   .story-card,
   .contact-card,
   .cta-panel,
@@ -2837,4 +2876,18 @@ body.has-cart-open {
 /* Hide duplicate floating WhatsApp CTA; header button is primary */
 .wa-float {
   display: none !important;
+}
+
+/* Productos: mostrar imagen completa sin recortes */
+.products #productsGrid .product-media .media-img {
+  object-fit: contain !important;
+  object-position: center !important;
+  padding: 10px !important;
+  background: #fff !important;
+}
+
+/* Galeria: evitar recorte de fotos al ampliar */
+.product-gallery-main {
+  object-fit: contain !important;
+  background: #fff !important;
 }
